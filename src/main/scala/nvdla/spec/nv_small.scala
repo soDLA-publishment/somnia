@@ -38,5 +38,7 @@ class nv_small
   val SECONDARY_MEMIF_MAX_BURST_LENGTH = 0
   val SECONDARY_MEMIF_WIDTH = 0
   val MEM_ADDRESS_WIDTH = 32
+
+  val SIMBA_NUM = 1
 }
 
