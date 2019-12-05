@@ -45,7 +45,7 @@ class NV_NVDLA_CMAC_core(implicit val conf: nvdlaConfig) extends Module {
     //==========================================================
     // interface with register config
     //==========================================================
-    val nvdla_op_gated_clk = Wire(Vec(conf.CMAC_ATOMK_HALF+3, Clock()))
+    val nvdla_op_gated_clk = Wire(Vec(conf.CMAC_ATOMK+3, Clock()))
 
     //==========================================================
     // input retiming logic
@@ -61,7 +61,7 @@ class NV_NVDLA_CMAC_core(implicit val conf: nvdlaConfig) extends Module {
     //==========================================================
     val u_active = Module(new NV_NVDLA_CMAC_CORE_active(useRealClock = true))
 
-    u_active.io.nvdla_core_clk := nvdla_op_gated_clk(conf.CMAC_ATOMK_HALF+1)
+    u_active.io.nvdla_core_clk := nvdla_op_gated_clk(conf.CMAC_ATOMK+1)
     u_active.io.in_dat <> u_rt_in.io.in_dat
     u_active.io.in_dat_stripe_end := u_rt_in.io.in_dat.bits.pd(conf.PKT_nvdla_stripe_info_stripe_st_FIELD)                 //|< w
     u_active.io.in_dat_stripe_st := u_rt_in.io.in_dat.bits.pd(conf.PKT_nvdla_stripe_info_stripe_end_FIELD)               //|< w
@@ -87,7 +87,7 @@ class NV_NVDLA_CMAC_core(implicit val conf: nvdlaConfig) extends Module {
     //==========================================================
     // output retiming logic
     //==========================================================
-    u_rt_out.io.nvdla_core_clk := nvdla_op_gated_clk(conf.CMAC_ATOMK_HALF+2)
+    u_rt_out.io.nvdla_core_clk := nvdla_op_gated_clk(conf.CMAC_ATOMK+2)
     u_rt_out.io.out.valid := withClock(io.nvdla_clock.nvdla_core_clk){ShiftRegister(u_rt_in.io.in_dat.valid, conf.MAC_PD_LATENCY)}     //|< w
     u_rt_out.io.out.bits.pd := withClock(io.nvdla_clock.nvdla_core_clk){ShiftRegister(u_rt_in.io.in_dat.bits.pd, conf.MAC_PD_LATENCY, u_rt_in.io.in_dat.valid)}     //|< w
 
@@ -96,9 +96,9 @@ class NV_NVDLA_CMAC_core(implicit val conf: nvdlaConfig) extends Module {
     //==========================================================
     // SLCG groups
     //==========================================================
-    val u_slcg_op = Array.fill(conf.CMAC_ATOMK_HALF+3){Module(new NV_NVDLA_slcg(1, false))}
+    val u_slcg_op = Array.fill(conf.CMAC_ATOMK+3){Module(new NV_NVDLA_slcg(1, false))}
 
-    for(i<- 0 to conf.CMAC_ATOMK_HALF+2){
+    for(i<- 0 to conf.CMAC_ATOMK+2){
         u_slcg_op(i).io.nvdla_clock := io.nvdla_clock
         u_slcg_op(i).io.slcg_en(0) := io.slcg_op_en(i)
         nvdla_op_gated_clk(i) := u_slcg_op(i).io.nvdla_core_gated_clk

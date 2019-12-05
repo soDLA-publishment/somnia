@@ -48,13 +48,13 @@ class NV_NVDLA_CMAC_CORE_rt_out(useRealClock:Boolean = false)(implicit val conf:
     val out_rt_pvld_d = Wire(Bool()) +: 
                         Seq.fill(conf.CMAC_OUT_RT_LATENCY)(RegInit(false.B))
 
-    val out_rt_mask_d = Wire(Vec(conf.CMAC_ATOMK_HALF, Bool())) +: 
-                        Seq.fill(conf.CMAC_OUT_RT_LATENCY)(RegInit(VecInit(Seq.fill(conf.CMAC_ATOMK_HALF)(false.B)))) 
+    val out_rt_mask_d = Wire(Vec(conf.CMAC_ATOMK, Bool())) +: 
+                        Seq.fill(conf.CMAC_OUT_RT_LATENCY)(RegInit(VecInit(Seq.fill(conf.CMAC_ATOMK)(false.B)))) 
 
     val out_rt_pd_d = Wire(UInt(9.W)) +: 
                       Seq.fill(conf.CMAC_OUT_RT_LATENCY)(RegInit("b0".asUInt(9.W))) 
                        
-    val out_rt_data_d = retiming(Vec(conf.CMAC_ATOMK_HALF, UInt(conf.CMAC_RESULT_WIDTH.W)), conf.CMAC_OUT_RT_LATENCY)
+    val out_rt_data_d = retiming(Vec(conf.CMAC_ATOMK, UInt(conf.CMAC_RESULT_WIDTH.W)), conf.CMAC_OUT_RT_LATENCY)
 
     val dp2reg_done_d = Wire(Bool()) +: 
                         Seq.fill(conf.CMAC_OUT_RT_LATENCY)(RegInit(false.B))
@@ -76,7 +76,7 @@ class NV_NVDLA_CMAC_CORE_rt_out(useRealClock:Boolean = false)(implicit val conf:
         when(out_rt_pvld_d(t)){
             out_rt_pd_d(t+1) := out_rt_pd_d(t)
         }
-        for(i <- 0 to conf.CMAC_ATOMK_HALF-1){
+        for(i <- 0 to conf.CMAC_ATOMK-1){
             when(out_rt_mask_d(t)(i)){  
                 out_rt_data_d(t+1)(i) := out_rt_data_d(t)(i)
             } 

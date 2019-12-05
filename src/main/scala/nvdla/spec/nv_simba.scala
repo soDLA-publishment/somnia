@@ -40,6 +40,8 @@ class nv_simba
   val SECONDARY_MEMIF_WIDTH = 0
   val MEM_ADDRESS_WIDTH = 32
 
+  val si
+
 
 
 }
