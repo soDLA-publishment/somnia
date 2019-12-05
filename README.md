@@ -1,3 +1,13 @@
 # simba
 
-Add SIMBA_NUM in spec/nv_simba
+
+
+## Installations
+
+Chisel bootcamp:
+
+https://github.com/freechipsproject/chisel-bootcamp/blob/master/Install.md
+
+
+
+
