@@ -1,86 +1,28 @@
-# Basic Arhictecture Setup
-
-A new kind of computational architecture starts from sketching up the data flow(in a piece of paper, or in your mind), 
-setup basic configurations(BPE(bandwidth per element), number of resources), and standard interface design. 
-
-## Setup Configurations
-
-In the src/main/your-project-name, create a basic configuration file, like this:
-
-```
-package nvdla
-
-class nv_simba
-{
-  val RETIMING_ENABLE = false
-  val SIMBA_BPE = 8
-  val SPLIT_NUM = 4
-  val MAC_ATOMIC_C_SIZE = 32
-  val MAC_ATOMIC_K_SIZE = 32
-}
-```
-
-Then, create an advanced configuration file as an extension, specifing the calculation steps from basic configuraion file.
-
-```
-package nvdla
-
-import chisel3._
-import chisel3.experimental._
-import chisel3.util._
-import scala.math._
+# Know Your Libraries
 
 
-class project_spec extends nv_simba
-{
-    val PE_MAC_ATOMIC_C_SIZE = MAC_ATOMIC_C_SIZE/SPLIT_NUM
-    val PE_MAC_ATOMIC_K_SIZE = MAC_ATOMIC_K_SIZE/SPLIT_NUM
-    val PE_MAC_RESULT_WIDTH = 2*SIMBA_BPE + log2Ceil(PE_MAC_ATOMIC_C_SIZE)
-}
- 
+## Clock
 
-```
+NV_CLK_gate_power: Simple clock gating.
 
-In the configuration tree, we use a ring structure, namely, the configuration is like a ring, 
-
-basic configurations -> advanced configurations -> module a configurations -> module b configurations -> project configurations. To avoid parameters in module a and parameters in module b are messed up, use a style of A_parameter_this and B_parameter_this, to make a separate.
-
-## Setup Standard Interface
-
-A set of standard interface can be built out of Bundle, see this(https://github.com/freechipsproject/chisel3/wiki/Bundles-and-Vecs).
-In nvdla, an Open DLA Interface Definition was given here https://github.com/nvdla/hw/tree/master/spec/odif.
-
-We create a set of bundles like this:
-
-```
-package nvdla
-
-import chisel3._
-import chisel3.util._
-import chisel3.experimental._
+slcg: Slavery clock gating, the input clock bundle includes a clock to the block, a clock to the whole project, a clock from global, a signal to disable the clock gating that is from global. The output is the gated clock to the block.
 
 
-// flow valid
-class csc2cmac_data_if(implicit val conf: simbaConfig)  extends Bundle{
-    val mask = Output(Vec(conf.CMAC_ATOMC, Bool()))
-    val data = Output(Vec(conf.CMAC_ATOMC, UInt(conf.CMAC_BPE.W)))
-//pd
-//   field batch_index 5
-//   field stripe_st 1
-//   field stripe_end 1
-//   field channel_end 1
-//   field layer_end 1
-    val pd = Output(UInt(9.W))
-}
+## Pipe
 
+BC_Pipe: Bubble-collapse pipe, a pipe that can bring the valid/ready signal delayed for one cycle.
 
-//  flow valid
-class csc2cmac_wt_if(implicit val conf: simbaConfig) extends Bundle{
-    val sel = Output(Vec(conf.CMAC_ATOMK, Bool()))
-    val mask = Output(Vec(conf.CMAC_ATOMC, Bool()))
-    val data = Output(Vec(conf.CMAC_ATOMC, UInt(conf.CMAC_BPE.W)))
-}
-```
+IS_Pipe: Input-skid pipe, a pipe that can bring the valid/ready signal delayed for two cycles.
+
+## RAM
+
+nv_flopram: A flop based ram. Power: high. Speed: fast. Area: Large
+
+nv_ram_rws: A synchronous-read, synchronous-write ram. Power: low. Speed: for small memory. Area: small.
+
+nv_ram_rwsp: Two clocks for read, synchronous-write ram. Power: low. Speed: for large memory. Area: small.
+
+nv_ram_rwsthp: nv_ram_rwsp with a bypass.
 
 
 
