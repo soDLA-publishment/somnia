@@ -60,7 +60,7 @@ Now you have csb2reg_control logic, single_register within your library.
 
 To make your accelerators be compatible with [tensorRT](https://github.com/NVIDIA/TensorRT), check [hardware specification manuals] (https://github.com/nvdla/hw/tree/master/spec/manual), it provides the information of configuration specifications, so that your accelerator can be supported by [NVDLA Kernel Mode Driver](http://nvdla.org/sw/runtime_environment.html#kernel-mode-driver).
 
-To setup dual_register, for example, you create a cmac block under your-project_dir
+To setup dual_register, for example, you create a cmac block under your-project-dir
 , in cmac_config file, add a bundle named dual_reg_outputs
 
 ```
@@ -69,7 +69,7 @@ class cmac_reg_dual_flop_outputs extends Bundle{
     val proc_precision = Output(UInt(2.W))
 }
 ```
-Under your-project-dir, base on the [hardware specification manuals] (https://github.com/nvdla/hw/tree/master/spec/manual), create a dual_reg, describe the relationships between address space and output configurations. You can use the example within this repo.
+Under your-project-dir, base on the [hardware specification manuals] (https://github.com/nvdla/hw/tree/master/spec/manual), create a dual_reg, describe the relationships between address space and output configurations(under dual_reg_outputs). You can use the example within this repo.
 
 Rdl files under hardware specification manuals can be automaticly generated to a ping-pong register, this could be done using a script. Hope you can finish that script.
 
