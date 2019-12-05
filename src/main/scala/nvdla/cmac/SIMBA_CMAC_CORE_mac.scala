@@ -11,7 +11,7 @@ import chisel3.iotesters.Driver
 class SIMBA_CMAC_CORE_mac(useRealClock:Boolean = false)(implicit conf: simbaConfig) extends Module {
     val io = IO(new Bundle {
         //clock
-        val nvdla_core_clk = Input(Clock())
+        val simba_core_clk = Input(Clock())
 
         //wt and dat
         val dat_actv = Vec(conf.CMAC_ATOMC, Flipped(ValidIO(new cmac_core_actv)))
@@ -43,7 +43,7 @@ class SIMBA_CMAC_CORE_mac(useRealClock:Boolean = false)(implicit conf: simbaConf
 //             │ ─┤ ─┤       │ ─┤ ─┤         
 //             └──┴──┘       └──┴──┘ 
 
-    val internal_clock = if(useRealClock) io.nvdla_core_clk 
+    val internal_clock = if(useRealClock) io.simba_core_clk 
                          else clock
 
 

@@ -10,7 +10,7 @@ import chisel3.util._
 class SIMBA_CMAC_CORE_active(useRealClock:Boolean = false)(implicit val conf: simbaConfig) extends Module {
     val io = IO(new Bundle {
         //clock
-        val nvdla_core_clk = Input(Clock())
+        val simba_core_clk = Input(Clock())
 
         // input_dat
         val in_dat = Flipped(ValidIO(new csc2cmac_data_if))  /* data valid */
@@ -49,7 +49,7 @@ class SIMBA_CMAC_CORE_active(useRealClock:Boolean = false)(implicit val conf: si
 //             │ ─┤ ─┤       │ ─┤ ─┤         
 //             └──┴──┘       └──┴──┘ 
 
-    val internal_clock = if(useRealClock) io.nvdla_core_clk else clock  
+    val internal_clock = if(useRealClock) io.simba_core_clk else clock  
 
                 
     class activeImpl{

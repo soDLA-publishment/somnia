@@ -9,7 +9,7 @@ import chisel3.util._
 class SIMBA_CMAC_core(implicit val conf: simbaConfig) extends Module {
     val io = IO(new Bundle {
         //clock
-        val nvdla_clock = Flipped(new nvdla_clock_if)
+        val simba_clock = Flipped(new simba_clock_if)
         val slcg_op_en = Input(UInt(conf.CMAC_SLCG_NUM.W))
 
         //odif
@@ -45,14 +45,14 @@ class SIMBA_CMAC_core(implicit val conf: simbaConfig) extends Module {
     //==========================================================
     // interface with register config
     //==========================================================
-    val nvdla_op_gated_clk = Wire(Vec(conf.CMAC_ATOMK+3, Clock()))
+    val simba_op_gated_clk = Wire(Vec(conf.CMAC_ATOMK+3, Clock()))
 
     //==========================================================
     // input retiming logic
     //==========================================================
     val u_rt_in = Module(new SIMBA_CMAC_CORE_rt_in(useRealClock = true))
 
-    u_rt_in.io.nvdla_core_clk := nvdla_op_gated_clk(conf.CMAC_ATOMK)
+    u_rt_in.io.simba_core_clk := simba_op_gated_clk(conf.CMAC_ATOMK)
     u_rt_in.io.sc2mac_dat <> io.sc2mac_dat
     u_rt_in.io.sc2mac_wt <> io.sc2mac_wt
 
@@ -61,7 +61,7 @@ class SIMBA_CMAC_core(implicit val conf: simbaConfig) extends Module {
     //==========================================================
     val u_active = Module(new SIMBA_CMAC_CORE_active(useRealClock = true))
 
-    u_active.io.nvdla_core_clk := nvdla_op_gated_clk(conf.CMAC_ATOMK+1)
+    u_active.io.simba_core_clk := simba_op_gated_clk(conf.CMAC_ATOMK+1)
     u_active.io.in_dat <> u_rt_in.io.in_dat
     u_active.io.in_dat_stripe_end := u_rt_in.io.in_dat.bits.pd(conf.PKT_nvdla_stripe_info_stripe_st_FIELD)                 //|< w
     u_active.io.in_dat_stripe_st := u_rt_in.io.in_dat.bits.pd(conf.PKT_nvdla_stripe_info_stripe_end_FIELD)               //|< w
@@ -75,7 +75,7 @@ class SIMBA_CMAC_core(implicit val conf: simbaConfig) extends Module {
 
     for(i<- 0 to conf.CMAC_ATOMK-1){
 
-        u_mac(i).io.nvdla_core_clk := nvdla_op_gated_clk(i)
+        u_mac(i).io.simba_core_clk := simba_op_gated_clk(i)
 
         u_mac(i).io.dat_actv <> u_active.io.dat_actv(i)
         u_mac(i).io.wt_actv <> u_active.io.wt_actv(i)
@@ -87,9 +87,9 @@ class SIMBA_CMAC_core(implicit val conf: simbaConfig) extends Module {
     //==========================================================
     // output retiming logic
     //==========================================================
-    u_rt_out.io.nvdla_core_clk := nvdla_op_gated_clk(conf.CMAC_ATOMK+2)
-    u_rt_out.io.out.valid := withClock(io.nvdla_clock.nvdla_core_clk){ShiftRegister(u_rt_in.io.in_dat.valid, conf.MAC_PD_LATENCY)}     //|< w
-    u_rt_out.io.out.bits.pd := withClock(io.nvdla_clock.nvdla_core_clk){ShiftRegister(u_rt_in.io.in_dat.bits.pd, conf.MAC_PD_LATENCY, u_rt_in.io.in_dat.valid)}     //|< w
+    u_rt_out.io.simba_core_clk := simba_op_gated_clk(conf.CMAC_ATOMK+2)
+    u_rt_out.io.out.valid := withClock(io.simba_clock.simba_core_clk){ShiftRegister(u_rt_in.io.in_dat.valid, conf.MAC_PD_LATENCY)}     //|< w
+    u_rt_out.io.out.bits.pd := withClock(io.simba_clock.simba_core_clk){ShiftRegister(u_rt_in.io.in_dat.bits.pd, conf.MAC_PD_LATENCY, u_rt_in.io.in_dat.valid)}     //|< w
 
     io.dp2reg_done := u_rt_out.io.dp2reg_done                   //|> o
     io.mac2accu <> u_rt_out.io.mac2accu         //|> o )
@@ -99,9 +99,9 @@ class SIMBA_CMAC_core(implicit val conf: simbaConfig) extends Module {
     val u_slcg_op = Array.fill(conf.CMAC_ATOMK+3){Module(new SIMBA_slcg(1, false))}
 
     for(i<- 0 to conf.CMAC_ATOMK+2){
-        u_slcg_op(i).io.nvdla_clock := io.nvdla_clock
+        u_slcg_op(i).io.simba_clock <> io.simba_clock
         u_slcg_op(i).io.slcg_en(0) := io.slcg_op_en(i)
-        nvdla_op_gated_clk(i) := u_slcg_op(i).io.nvdla_core_gated_clk
+        simba_op_gated_clk(i) := u_slcg_op(i).io.simba_core_gated_clk
     }
 
 }

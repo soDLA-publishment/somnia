@@ -8,7 +8,7 @@ import chisel3.experimental._
 // flow valid
 class csc2cmac_data_if(implicit val conf: simbaConfig)  extends Bundle{
     val mask = Output(Vec(conf.CMAC_ATOMC, Bool()))
-    val data = Output(Vec(conf.CMAC_ATOMC, UInt(conf.NVDLA_BPE.W)))
+    val data = Output(Vec(conf.CMAC_ATOMC, UInt(conf.CMAC_BPE.W)))
 //pd
 //   field batch_index 5
 //   field stripe_st 1
@@ -23,14 +23,14 @@ class csc2cmac_data_if(implicit val conf: simbaConfig)  extends Bundle{
 class csc2cmac_wt_if(implicit val conf: simbaConfig) extends Bundle{
     val sel = Output(Vec(conf.CMAC_ATOMK, Bool()))
     val mask = Output(Vec(conf.CMAC_ATOMC, Bool()))
-    val data = Output(Vec(conf.CMAC_ATOMC, UInt(conf.NVDLA_BPE.W)))
+    val data = Output(Vec(conf.CMAC_ATOMC, UInt(conf.CMAC_BPE.W)))
 }
 
 
 //  flow valid
 class cmac2cacc_if(implicit val conf: simbaConfig) extends Bundle{
     val mask = Output(Vec(conf.CMAC_ATOMK, Bool()))
-    val data = Output(Vec(conf.CMAC_ATOMK, UInt(conf.NVDLA_MAC_RESULT_WIDTH.W)))
+    val data = Output(Vec(conf.CMAC_ATOMK, UInt(conf.CMAC_RESULT_WIDTH.W)))
     //val mode = Output(Bool())
 //pd
 //   field batch_index 5
@@ -41,19 +41,13 @@ class cmac2cacc_if(implicit val conf: simbaConfig) extends Bundle{
     val pd = Output(UInt(9.W))
 }
 
-
-class nvdla_dma_wr_rsp_if(implicit val conf: simbaConfig) extends Bundle{
-    val complete = Output(Bool())
-}
-
-
 class csb2dp_if extends Bundle{
     val req = Flipped(ValidIO(UInt(63.W)))
     val resp = ValidIO(UInt(34.W))
 }
 
-class nvdla_clock_if extends Bundle{
-    val nvdla_core_clk = Output(Clock())
+class simba_clock_if extends Bundle{
+    val simba_core_clk = Output(Clock())
     val dla_clk_ovr_on_sync = Output(Clock())
     val global_clk_ovr_on_sync = Output(Clock())
     val tmc2slcg_disable_clock_gating = Output(Bool())
@@ -67,23 +61,6 @@ class reg_control_if extends Bundle{
     val wr_en = Input(Bool())
 }
 
-
-
-class nvdla_wr_if(addr_width:Int, width:Int) extends Bundle{
-    val addr = ValidIO(UInt(addr_width.W))
-    val data = Output(UInt(width.W))
-
-    override def cloneType: this.type =
-    new nvdla_wr_if(addr_width:Int, width:Int).asInstanceOf[this.type]
-}
-
-class nvdla_rd_if(addr_width:Int, width:Int) extends Bundle{
-    val addr = ValidIO(UInt(addr_width.W))
-    val data = Input(UInt(width.W))
-
-    override def cloneType: this.type =
-    new nvdla_rd_if(addr_width:Int, width:Int).asInstanceOf[this.type]
-}
 
 
 
