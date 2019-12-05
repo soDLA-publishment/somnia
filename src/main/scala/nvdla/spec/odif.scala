@@ -42,7 +42,6 @@ class cmac2cacc_if(implicit val conf: nvdlaConfig) extends Bundle{
 }
 
 
-
 class nvdla_dma_wr_rsp_if(implicit val conf: nvdlaConfig) extends Bundle{
     val complete = Output(Bool())
 }
@@ -69,15 +68,6 @@ class reg_control_if extends Bundle{
 }
 
 
-class updt_entries_slices_if(implicit val conf: nvdlaConfig) extends Bundle{
-    val entries = Output(UInt(conf.CSC_ENTRIES_NUM_WIDTH.W))
-    val slices = Output(UInt(14.W))
-}
-
-class updt_entries_kernels_if(implicit val conf: nvdlaConfig) extends Bundle{
-    val entries = Output(UInt(conf.CSC_ENTRIES_NUM_WIDTH.W))
-    val kernels = Output(UInt(14.W))
-}
 
 class nvdla_wr_if(addr_width:Int, width:Int) extends Bundle{
     val addr = ValidIO(UInt(addr_width.W))

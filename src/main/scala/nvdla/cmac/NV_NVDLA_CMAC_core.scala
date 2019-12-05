@@ -52,7 +52,7 @@ class NV_NVDLA_CMAC_core(implicit val conf: nvdlaConfig) extends Module {
     //==========================================================
     val u_rt_in = Module(new NV_NVDLA_CMAC_CORE_rt_in(useRealClock = true))
 
-    u_rt_in.io.nvdla_core_clk := nvdla_op_gated_clk(conf.CMAC_ATOMK_HALF)
+    u_rt_in.io.nvdla_core_clk := nvdla_op_gated_clk(conf.CMAC_ATOMK)
     u_rt_in.io.sc2mac_dat <> io.sc2mac_dat
     u_rt_in.io.sc2mac_wt <> io.sc2mac_wt
 
@@ -70,10 +70,10 @@ class NV_NVDLA_CMAC_core(implicit val conf: nvdlaConfig) extends Module {
     //==========================================================
     // MAC CELLs
     //==========================================================
-    val u_mac = Array.fill(conf.CMAC_ATOMK_HALF){Module(new NV_NVDLA_CMAC_CORE_mac(useRealClock = true))}
+    val u_mac = Array.fill(conf.CMAC_ATOMK){Module(new NV_NVDLA_CMAC_CORE_mac(useRealClock = true))}
     val u_rt_out = Module(new NV_NVDLA_CMAC_CORE_rt_out(useRealClock = true))  // use seq
 
-    for(i<- 0 to conf.CMAC_ATOMK_HALF-1){
+    for(i<- 0 to conf.CMAC_ATOMK-1){
 
         u_mac(i).io.nvdla_core_clk := nvdla_op_gated_clk(i)
 

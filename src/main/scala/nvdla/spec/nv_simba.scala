@@ -20,8 +20,8 @@ class nv_simba
   val CDP_ENABLE = true
   val RETIMING_ENABLE = true
   val SIMBA = 4
-  val MAC_ATOMIC_C_SIZE = 8 
-  val MAC_ATOMIC_K_SIZE = 8
+  val MAC_ATOMIC_C_SIZE = 32
+  val MAC_ATOMIC_K_SIZE = 32
   val MEMORY_ATOMIC_SIZE = 8
   val MAX_BATCH_SIZE = 0
   val CBUF_BANK_NUMBER = 32
@@ -40,7 +40,7 @@ class nv_simba
   val SECONDARY_MEMIF_WIDTH = 0
   val MEM_ADDRESS_WIDTH = 32
 
-  val si
+  val SIMBA_NUM = 4
 
 
 

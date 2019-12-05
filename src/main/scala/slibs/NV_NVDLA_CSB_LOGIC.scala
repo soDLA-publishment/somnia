@@ -59,8 +59,6 @@ withClock(io.clk){
     val req_wrbe = req_pd(60, 57)
     val req_level = req_pd(62, 61)
 
-    io.csb2dp.req.ready := true.B
-
     //Address in CSB master is word aligned while address in regfile is byte aligned.
     io.reg.offset := Cat(req_addr, "b0".asUInt(2.W))
     io.reg.wr_data := req_wdat
