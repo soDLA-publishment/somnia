@@ -1,9 +1,9 @@
-# Basic Arhictecture Setup
+# Reg2dp, Get the Correct Configurations from CSB
 
-A new kind of computational architecture starts from sketching up the data flow(in a piece of paper, or in your mind), 
-setup basic configurations(BPE(bandwidth per element), number of resources), and standard interface design. 
+Originally, I want to name to this chapter 'Ping-pong Synchronization Mechanism' from http://nvdla.org/hw/v1/hwarch.html, mainly discuss about how the discrete processor perform the correct behavior at the specified time. If I mainly talk about how ping-pong works in this chapter, you might think I'm just repeating. But I really encourage you to read about 'Ping-pong Synchronization Mechanism'.
 
-## Setup Configurations
+
+## Setup Interface in the Basic Configurations(ODIF)
 
 In the src/main/your-project-name, create a basic configuration file, like this:
 
