@@ -30,7 +30,7 @@ class cmacConfiguration extends project_spec
 }
 
 
-class cmac_core_actv(implicit val conf: nvdlaConfig) extends Bundle{
+class cmac_core_actv(implicit val conf: simbaConfig) extends Bundle{
     val nz = Output(Bool())
     val data = Output(UInt(conf.CMAC_BPE.W))
 }

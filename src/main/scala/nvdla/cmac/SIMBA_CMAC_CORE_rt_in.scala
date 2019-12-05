@@ -5,7 +5,7 @@ import chisel3.experimental._
 import chisel3.util._
 
 
-class NV_NVDLA_CMAC_CORE_rt_in(useRealClock:Boolean = false)(implicit val conf: nvdlaConfig) extends Module {
+class SIMBA_CMAC_CORE_rt_in(useRealClock:Boolean = false)(implicit val conf: simbaConfig) extends Module {
     val io = IO(new Bundle {
         //clock
         val nvdla_core_clk = Input(Clock())
@@ -61,8 +61,8 @@ class NV_NVDLA_CMAC_CORE_rt_in(useRealClock:Boolean = false)(implicit val conf: 
                             Seq.fill(conf.CMAC_IN_RT_LATENCY)(RegInit(VecInit(Seq.fill(conf.CMAC_ATOMC)(false.B)))) 
     val in_rt_wt_pvld_d = Wire(Bool()) +: 
                             Seq.fill(conf.CMAC_IN_RT_LATENCY)(RegInit(false.B))
-    val in_rt_wt_sel_d =  Wire(Vec(conf.CMAC_ATOMK_HALF, Bool())) +: 
-                            Seq.fill(conf.CMAC_IN_RT_LATENCY)(RegInit(VecInit(Seq.fill(conf.CMAC_ATOMK_HALF)(false.B)))) 
+    val in_rt_wt_sel_d =  Wire(Vec(conf.CMAC_ATOMK, Bool())) +: 
+                            Seq.fill(conf.CMAC_IN_RT_LATENCY)(RegInit(VecInit(Seq.fill(conf.CMAC_ATOMK)(false.B)))) 
 
     // assign input
 
@@ -118,7 +118,7 @@ class NV_NVDLA_CMAC_CORE_rt_in(useRealClock:Boolean = false)(implicit val conf: 
 
 }
 
-object NV_NVDLA_CMAC_CORE_rt_inDriver extends App {
-  implicit val conf: nvdlaConfig = new nvdlaConfig
-  chisel3.Driver.execute(args, () => new NV_NVDLA_CMAC_CORE_rt_in(useRealClock = true))
+object SIMBA_CMAC_CORE_rt_inDriver extends App {
+  implicit val conf: simbaConfig = new simbaConfig
+  chisel3.Driver.execute(args, () => new SIMBA_CMAC_CORE_rt_in(useRealClock = true))
 }

@@ -7,7 +7,7 @@ import chisel3.util._
 
 //this module is to active dat and wt
 
-class NV_NVDLA_CMAC_CORE_active(useRealClock:Boolean = false)(implicit val conf: nvdlaConfig) extends Module {
+class SIMBA_CMAC_CORE_active(useRealClock:Boolean = false)(implicit val conf: simbaConfig) extends Module {
     val io = IO(new Bundle {
         //clock
         val nvdla_core_clk = Input(Clock())
@@ -187,9 +187,9 @@ class NV_NVDLA_CMAC_CORE_active(useRealClock:Boolean = false)(implicit val conf:
 
 
 
-object NV_NVDLA_CMAC_CORE_activeDriver extends App {
-  implicit val conf: nvdlaConfig = new nvdlaConfig
-  chisel3.Driver.execute(args, () => new NV_NVDLA_CMAC_CORE_active(useRealClock = true))
+object SIMBA_CMAC_CORE_activeDriver extends App {
+  implicit val conf: simbaConfig = new simbaConfig
+  chisel3.Driver.execute(args, () => new SIMBA_CMAC_CORE_active(useRealClock = true))
 }
 
 

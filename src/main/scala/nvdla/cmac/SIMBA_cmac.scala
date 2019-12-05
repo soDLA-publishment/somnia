@@ -5,7 +5,7 @@ import chisel3.experimental._
 import chisel3.util._
 
 
-class NV_NVDLA_cmac(implicit val conf: nvdlaConfig) extends Module {
+class SIMBA_cmac(implicit val conf: simbaConfig) extends Module {
     val io = IO(new Bundle {
         //general clock
         val nvdla_clock = Flipped(new nvdla_clock_if)
@@ -48,8 +48,8 @@ withReset(!io.nvdla_core_rstn){
     //==========================================================
     // reg
     //==========================================================
-    val u_core = Module(new NV_NVDLA_CMAC_core)
-    val u_reg = Module(new NV_NVDLA_CMAC_reg)
+    val u_core = Module(new SIMBA_CMAC_core)
+    val u_reg = Module(new SIMBA_CMAC_reg)
     //clk
     u_core.io.nvdla_clock <> io.nvdla_clock         //|< b
     u_reg.io.nvdla_core_clk := io.nvdla_clock.nvdla_core_clk        //|< i
@@ -65,7 +65,7 @@ withReset(!io.nvdla_core_rstn){
 }}
 
 
-object NV_NVDLA_cmacDriver extends App {
-  implicit val conf: nvdlaConfig = new nvdlaConfig
-  chisel3.Driver.execute(args, () => new NV_NVDLA_cmac())
+object SIMBA_cmacDriver extends App {
+  implicit val conf: simbaConfig = new simbaConfig
+  chisel3.Driver.execute(args, () => new SIMBA_cmac())
 }

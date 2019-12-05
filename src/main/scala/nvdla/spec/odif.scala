@@ -6,7 +6,7 @@ import chisel3.experimental._
 
 
 // flow valid
-class csc2cmac_data_if(implicit val conf: nvdlaConfig)  extends Bundle{
+class csc2cmac_data_if(implicit val conf: simbaConfig)  extends Bundle{
     val mask = Output(Vec(conf.CMAC_ATOMC, Bool()))
     val data = Output(Vec(conf.CMAC_ATOMC, UInt(conf.NVDLA_BPE.W)))
 //pd
@@ -20,7 +20,7 @@ class csc2cmac_data_if(implicit val conf: nvdlaConfig)  extends Bundle{
 
 
 //  flow valid
-class csc2cmac_wt_if(implicit val conf: nvdlaConfig) extends Bundle{
+class csc2cmac_wt_if(implicit val conf: simbaConfig) extends Bundle{
     val sel = Output(Vec(conf.CMAC_ATOMK, Bool()))
     val mask = Output(Vec(conf.CMAC_ATOMC, Bool()))
     val data = Output(Vec(conf.CMAC_ATOMC, UInt(conf.NVDLA_BPE.W)))
@@ -28,7 +28,7 @@ class csc2cmac_wt_if(implicit val conf: nvdlaConfig) extends Bundle{
 
 
 //  flow valid
-class cmac2cacc_if(implicit val conf: nvdlaConfig) extends Bundle{
+class cmac2cacc_if(implicit val conf: simbaConfig) extends Bundle{
     val mask = Output(Vec(conf.CMAC_ATOMK, Bool()))
     val data = Output(Vec(conf.CMAC_ATOMK, UInt(conf.NVDLA_MAC_RESULT_WIDTH.W)))
     //val mode = Output(Bool())
@@ -42,7 +42,7 @@ class cmac2cacc_if(implicit val conf: nvdlaConfig) extends Bundle{
 }
 
 
-class nvdla_dma_wr_rsp_if(implicit val conf: nvdlaConfig) extends Bundle{
+class nvdla_dma_wr_rsp_if(implicit val conf: simbaConfig) extends Bundle{
     val complete = Output(Bool())
 }
 

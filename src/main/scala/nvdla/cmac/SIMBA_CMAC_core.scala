@@ -6,7 +6,7 @@ import chisel3._
 import chisel3.experimental._
 import chisel3.util._
 
-class NV_NVDLA_CMAC_core(implicit val conf: nvdlaConfig) extends Module {
+class SIMBA_CMAC_core(implicit val conf: simbaConfig) extends Module {
     val io = IO(new Bundle {
         //clock
         val nvdla_clock = Flipped(new nvdla_clock_if)
@@ -50,7 +50,7 @@ class NV_NVDLA_CMAC_core(implicit val conf: nvdlaConfig) extends Module {
     //==========================================================
     // input retiming logic
     //==========================================================
-    val u_rt_in = Module(new NV_NVDLA_CMAC_CORE_rt_in(useRealClock = true))
+    val u_rt_in = Module(new SIMBA_CMAC_CORE_rt_in(useRealClock = true))
 
     u_rt_in.io.nvdla_core_clk := nvdla_op_gated_clk(conf.CMAC_ATOMK)
     u_rt_in.io.sc2mac_dat <> io.sc2mac_dat
@@ -59,7 +59,7 @@ class NV_NVDLA_CMAC_core(implicit val conf: nvdlaConfig) extends Module {
     //==========================================================
     // input shadow and active pipeline
     //==========================================================
-    val u_active = Module(new NV_NVDLA_CMAC_CORE_active(useRealClock = true))
+    val u_active = Module(new SIMBA_CMAC_CORE_active(useRealClock = true))
 
     u_active.io.nvdla_core_clk := nvdla_op_gated_clk(conf.CMAC_ATOMK+1)
     u_active.io.in_dat <> u_rt_in.io.in_dat
@@ -70,8 +70,8 @@ class NV_NVDLA_CMAC_core(implicit val conf: nvdlaConfig) extends Module {
     //==========================================================
     // MAC CELLs
     //==========================================================
-    val u_mac = Array.fill(conf.CMAC_ATOMK){Module(new NV_NVDLA_CMAC_CORE_mac(useRealClock = true))}
-    val u_rt_out = Module(new NV_NVDLA_CMAC_CORE_rt_out(useRealClock = true))  // use seq
+    val u_mac = Array.fill(conf.CMAC_ATOMK){Module(new SIMBA_CMAC_CORE_mac(useRealClock = true))}
+    val u_rt_out = Module(new SIMBA_CMAC_CORE_rt_out(useRealClock = true))  // use seq
 
     for(i<- 0 to conf.CMAC_ATOMK-1){
 
@@ -96,7 +96,7 @@ class NV_NVDLA_CMAC_core(implicit val conf: nvdlaConfig) extends Module {
     //==========================================================
     // SLCG groups
     //==========================================================
-    val u_slcg_op = Array.fill(conf.CMAC_ATOMK+3){Module(new NV_NVDLA_slcg(1, false))}
+    val u_slcg_op = Array.fill(conf.CMAC_ATOMK+3){Module(new SIMBA_slcg(1, false))}
 
     for(i<- 0 to conf.CMAC_ATOMK+2){
         u_slcg_op(i).io.nvdla_clock := io.nvdla_clock
@@ -106,8 +106,8 @@ class NV_NVDLA_CMAC_core(implicit val conf: nvdlaConfig) extends Module {
 
 }
 
-object NV_NVDLA_CMAC_coreDriver extends App {
-  implicit val conf: nvdlaConfig = new nvdlaConfig
-  chisel3.Driver.execute(args, () => new NV_NVDLA_CMAC_core)
+object SIMBA_CMAC_coreDriver extends App {
+  implicit val conf: simbaConfig = new simbaConfig
+  chisel3.Driver.execute(args, () => new SIMBA_CMAC_core)
 }
 

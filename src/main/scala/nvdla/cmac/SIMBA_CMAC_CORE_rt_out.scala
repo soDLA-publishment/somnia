@@ -4,7 +4,7 @@ import chisel3._
 import chisel3.experimental._
 import chisel3.util._
 
-class NV_NVDLA_CMAC_CORE_rt_out(useRealClock:Boolean = false)(implicit val conf: nvdlaConfig) extends Module {
+class SIMBA_CMAC_CORE_rt_out(useRealClock:Boolean = false)(implicit val conf: simbaConfig) extends Module {
     val io = IO(new Bundle {
         //clock
         val nvdla_core_clk = Input(Clock())
@@ -94,9 +94,9 @@ class NV_NVDLA_CMAC_CORE_rt_out(useRealClock:Boolean = false)(implicit val conf:
     val rt_out = withClock(internal_clock){new rt_outImpl}
 }
 
-object NV_NVDLA_CMAC_CORE_rt_outDriver extends App {
-  implicit val conf: nvdlaConfig = new nvdlaConfig
-  chisel3.Driver.execute(args, () => new NV_NVDLA_CMAC_CORE_rt_out(useRealClock = true))
+object SIMBA_CMAC_CORE_rt_outDriver extends App {
+  implicit val conf: simbaConfig = new simbaConfig
+  chisel3.Driver.execute(args, () => new SIMBA_CMAC_CORE_rt_out(useRealClock = true))
 }
 
     
