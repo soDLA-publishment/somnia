@@ -3,47 +3,66 @@
 Originally, I want to name to this chapter 'Ping-pong Synchronization Mechanism' from http://nvdla.org/hw/v1/hwarch.html, mainly discuss about how the discrete processor perform the correct behavior at the specified time. If I mainly talk about how ping-pong works in this chapter, you might think I'm just repeating. But I really encourage you to read about 'Ping-pong Synchronization Mechanism'.
 
 
-## Setup Interface in the Basic Configurations(ODIF)
+## Add csb2dp, register control interface in your standard interface file
 
-In the src/main/your-project-name, create a basic configuration file, like this:
+In the src/main/your-project-name/your-standard-interfaces, add the following:
+
+csb2dp,
 
 ```
-package nvdla
-
-class nv_simba
-{
-  val RETIMING_ENABLE = false
-  val SIMBA_BPE = 8
-  val SPLIT_NUM = 4
-  val MAC_ATOMIC_C_SIZE = 32
-  val MAC_ATOMIC_K_SIZE = 32
+class csb2dp_if extends Bundle{
+    val req = Flipped(ValidIO(UInt(63.W)))
+    val resp = ValidIO(UInt(34.W))
 }
 ```
 
-Then, create an advanced configuration file as an extension, specifing the calculation steps from basic configuraion file.
+register control interface,
 
 ```
-package nvdla
-
-import chisel3._
-import chisel3.experimental._
-import chisel3.util._
-import scala.math._
-
-
-class project_spec extends nv_simba
-{
-    val PE_MAC_ATOMIC_C_SIZE = MAC_ATOMIC_C_SIZE/SPLIT_NUM
-    val PE_MAC_ATOMIC_K_SIZE = MAC_ATOMIC_K_SIZE/SPLIT_NUM
-    val PE_MAC_RESULT_WIDTH = 2*SIMBA_BPE + log2Ceil(PE_MAC_ATOMIC_C_SIZE)
+class reg_control_if extends Bundle{
+    val rd_data = Output(UInt(32.W))
+    val offset = Input(UInt(12.W))
+    val wr_data = Input(UInt(32.W))
+    val wr_en = Input(Bool())
 }
- 
 
 ```
 
-In the configuration tree, we use a ring structure, namely, the configuration is like a ring, 
+csb2dp is the connection between Configuration Space Bus and discrete processors, [csb to register control logic](https://github.com/soDLA-publishment/soDLA/blob/soDLA_beta/src/main/scala/slibs/NV_NVDLA_CSB_LOGIC.scala) will generate the register control information, tell ping-pong register which parameter to pass to discrete processors or receive from discrete processors.
 
-basic configurations -> advanced configurations -> module a configurations -> module b configurations -> project configurations. To avoid parameters in module a and parameters in module b are messed up, use a style of A_parameter_this and B_parameter_this, to make a separate.
+```
+    csb
+    /\
+    ||
+    \/
+    register control
+    /\
+    ||
+    \/
+    ping-pong registers
+    /\
+    ||
+    \/
+    discrete processors
+    
+```
+
+
+## Setup CSB2Register and Ping-pong Register
+
+Copy NV_NVDLA_CSB_LOGIC.scala to your library. it will translate csb2dp interface to register control logic. 
+
+A ping-pong register is consisted of 2 dual_registers(generate configurations) and one single_register(decide which pointer and consumer to use). Single register is to decide which of the dual_register to use in this cycle, dual register is to produce a configurations to be passed to discrete processors.
+
+A common NV_NVDLA_BASIC_REG_single is given [here](https://github.com/soDLA-publishment/soDLA/blob/soDLA_beta/src/main/scala/slibs/NV_NVDLA_BASIC_REG_single.scala), also copy it to your library.
+
+Now you have csb2reg_control logic, single_register within your library.
+
+
+
+
+
+
 
 ## Setup Standard Interface
 
