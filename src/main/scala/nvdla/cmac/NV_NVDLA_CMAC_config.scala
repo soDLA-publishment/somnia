@@ -9,12 +9,11 @@ import scala.math._
 class cmacConfiguration extends project_spec
 {
     val CMAC_BPE = NVDLA_BPE //bits per element
-    val CMAC_ATOMC = NVDLA_MAC_DIS_ATOMIC_C_SIZE
-    val CMAC_ATOMK = NVDLA_MAC_DIS_ATOMIC_K_SIZE
-    val CMAC_ATOMK_HALF  = NVDLA_MAC_DIS_ATOMIC_K_SIZE/2
-    val CMAC_INPUT_NUM = NVDLA_MAC_DIS_ATOMIC_C_SIZE  //for one MAC_CELL
-    val CMAC_SLCG_NUM = 3+CMAC_ATOMK_HALF
-    val CMAC_RESULT_WIDTH = 2*NVDLA_BPE + log2Ceil(NVDLA_MAC_DIS_ATOMIC_C_SIZE)   //16b+log2(atomC)
+    val CMAC_ATOMC = NVDLA_MAC_ATOMIC_C_SIMBA_SIZE
+    val CMAC_ATOMK = NVDLA_MAC_ATOMIC_K_SIMBA_SIZE
+    val CMAC_INPUT_NUM = NVDLA_MAC_ATOMIC_C_SIMBA_SIZE  //for one MAC_CELL
+    val CMAC_SLCG_NUM = 3+NVDLA_MAC_ATOMIC_K_SIMBA_SIZE
+    val CMAC_RESULT_WIDTH = 2*NVDLA_BPE + log2Ceil(NVDLA_MAC_ATOMIC_C_SIMBA_SIZE)   //16b+log2(atomC)
     val CMAC_IN_RT_LATENCY = 2   //both for data&pd
     val CMAC_OUT_RT_LATENCY = 2   //both for data&pd
     val CMAC_OUT_RETIMING = 3   //only data

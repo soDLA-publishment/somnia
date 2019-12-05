@@ -22,8 +22,8 @@ class NV_NVDLA_CMAC_CORE_active(useRealClock:Boolean = false)(implicit val conf:
         val in_wt = Flipped(ValidIO(new csc2cmac_wt_if))  /* data valid */
 
         // atomk, atomc, data&wt
-        val dat_actv = Vec(conf.CMAC_ATOMK_HALF, Vec(conf.CMAC_ATOMC, ValidIO(new cmac_core_actv)))
-        val wt_actv = Vec(conf.CMAC_ATOMK_HALF, Vec(conf.CMAC_ATOMC, ValidIO(new cmac_core_actv)))
+        val dat_actv = Vec(conf.CMAC_ATOMK_SIMBA, Vec(conf.CMAC_ATOMC_SIMBA, ValidIO(new cmac_core_actv)))
+        val wt_actv = Vec(conf.CMAC_ATOMK_SIMBA, Vec(conf.CMAC_ATOMC_SIMBA, ValidIO(new cmac_core_actv)))
             
     })
 
