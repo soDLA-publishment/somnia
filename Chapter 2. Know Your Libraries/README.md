@@ -26,10 +26,6 @@ nv_ram_rwsthp: nv_ram_rwsp with a bypass.
 
 
 
-### You can find the above items within slibs and rams.
-
-
-
 
 
 
