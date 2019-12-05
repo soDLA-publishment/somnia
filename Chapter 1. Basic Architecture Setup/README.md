@@ -5,7 +5,7 @@ setup basic configurations(BPE(bandwidth per element), number of resources), and
 
 ## Setup Configurations
 
-In the src/main/your-project-name, create a basic configuration file, like this:
+In the src/main/your-project-name, create a spec folder, create a basic configuration file, like this:
 
 ```
 package nvdla
