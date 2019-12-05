@@ -69,7 +69,7 @@ class cmac_reg_dual_flop_outputs extends Bundle{
     val proc_precision = Output(UInt(2.W))
 }
 ```
-Under your-project_dir, based on the [hardware specification manuals] (https://github.com/nvdla/hw/tree/master/spec/manual), create a dual_reg, describe the relationships between address space and output configurations. You can use the example within this repo.
+Under your-project-dir, base on the [hardware specification manuals] (https://github.com/nvdla/hw/tree/master/spec/manual), create a dual_reg, describe the relationships between address space and output configurations. You can use the example within this repo.
 
 Rdl files under hardware specification manuals can be automaticly generated to a ping-pong register, this could be done using a script. Hope you can finish that script.
 
