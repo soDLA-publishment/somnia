@@ -1,4 +1,4 @@
-# Basic Arhictecture Setup
+# Basic Architecture Setup
 
 A new kind of computational architecture starts from sketching up the data flow(in a piece of paper, or in your mind), 
 setup basic configurations(BPE(bandwidth per element), number of resources), and standard interface design. 
