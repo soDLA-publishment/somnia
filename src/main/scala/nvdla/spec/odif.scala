@@ -62,6 +62,23 @@ class reg_control_if extends Bundle{
 }
 
 
+class nvdla_wr_if(addr_width:Int, width:Int) extends Bundle{
+    val addr = ValidIO(UInt(addr_width.W))
+    val data = Output(UInt(width.W))
+
+    override def cloneType: this.type =
+    new nvdla_wr_if(addr_width:Int, width:Int).asInstanceOf[this.type]
+}
+
+class nvdla_rd_if(addr_width:Int, width:Int) extends Bundle{
+    val addr = ValidIO(UInt(addr_width.W))
+    val data = Input(UInt(width.W))
+
+    override def cloneType: this.type =
+    new nvdla_rd_if(addr_width:Int, width:Int).asInstanceOf[this.type]
+}
+
+
 
 
 
