@@ -1,63 +1,32 @@
-# Start from CMAC
+# Deliver Result to CACC
 
-CMAC is a computational-intensive module, includes 4 major parts, 1. retiming to buffer, 2. active to deliver the correct weight and dat, 3. atomic k's mac, and 4. corresponding ping-pong register. 
+Under your-project-dir, create a folder, name it cacc. Copy all the files from [soDLA cacc](https://github.com/soDLA-publishment/soDLA/tree/soDLA_beta/src/main/scala/nvdla/cacc). A CACC requires two stages, accumulate the results and deliver the results to the next stages.
 
-Under your-project-dir, create a folder, name it cmac. Copy all the files from [soDLA cmac](https://github.com/soDLA-publishment/soDLA/tree/soDLA_beta/src/main/scala/nvdla/cmac). The following is the brief introduction of submodules.
+## Accumulate
 
-## Retiming 
-
-Includes input retiming, output retiming, retiming during mac calculations. Because cmac is a computational-intensive module, the delay can be large, if there is no retiming and set cmac as one stage within one pipe, the timing result can be bad. Retiming is to give the computational-intensive module more duty cycles, so that we can reduce the time/cycle of the whole design.
-
-Because we are not sure about how much delay it will take during retiming. We can set input retiming latency, output retiming latency, active retiming latency, mac retiming latency as parameters in the module configurations.
+Accumulate need assembly and calculation. Assembly buffer consists of memories and controls, calculation part will calculate the accumulative mac results from cmac stage, the basic unit is CACC_CALC_int8, it will keep adding up, after in_sel is one, the result with rounding will show up in the result. 
 
 
-## MAC
+## Delivery buffer
 
-One mac can perform one vector multiply and accumulate per time. 
-
-
-```
-    val mout = VecInit(Seq.fill(conf.CMAC_ATOMC)(0.asSInt((2*conf.CMAC_BPE).W)))
-
-    for(i <- 0 to conf.CMAC_ATOMC-1){
-        when(io.wt_actv(i).valid&io.wt_actv(i).bits.nz&io.dat_actv(i).valid&io.dat_actv(i).bits.nz){                       
-             mout(i) := io.wt_actv(i).bits.data.asSInt*io.dat_actv(i).bits.data.asSInt
-        }
-    }  
-
-    val sum_out = mout.reduce(_+&_).asUInt
-    
-    //add retiming
-    val pp_pvld_d0 = io.dat_actv(0).valid&io.wt_actv(0).valid
-
-    io.mac_out.bits := ShiftRegister(sum_out, conf.CMAC_OUT_RETIMING, pp_pvld_d0)
-    io.mac_out.valid := ShiftRegister(pp_pvld_d0, conf.CMAC_OUT_RETIMING, pp_pvld_d0)
-
-    }
-```
-
-The final width is 2*m+log2(n), m is the bandwidth per element(BPE), n is the input vector length.
+A delivery buffer consists of delivery buffer and delivery control, as a buffer to the next stage.
 
 
-## Active
+## Add relu to CACC as a local unit
 
-Because weight is stored in a kernel, it can be re-used for multiple times, weight has one more shadow stage to cache. 
+In CACC_CALC_int8, before the final output, add the following,
 
 ```
-wt : in --> pre --> sd --> actv 
-dat: in --> pre ---------> actv
+val u_x_relu = Module(new NV_NVDLA_HLS_relu(32))
+u_x_relu.io.data_in := i_final_result
+val relu_out = u_x_relu.io.data_out
+val relu_dout = Mux(io.cfg_relu_bypass, i_final_result, relu_out)
 ```
 
-When a stripe start, push the weight from the shadow zone to actv. When the stripe is not start or end, keep using the weight in the output(actv). When the stripe is end, discard the weight that is from actve, and introducing new weight to shadow.
+To find the corresponding programming space of cfg_relu_bypass, check [SDP manual](https://github.com/nvdla/hw/blob/master/spec/manual/NVDLA_SDP.rdl), notice 'cfg_bn_relu_bypass'.  Congifure the register file, add bn_relu_bypass to cacc_reg_dual. So that relu configuration is connected to the programming layer.
 
-## Adjust soDLA modules to simba
 
-In the cmacConfigurations, set
-CMAC_ATOMC = PE_MAC_ATOMIC_C_SIZE, CMAC_ATOMK = PE_MAC_ATOMIC_K_SIZE.
 
-Modify the corresponding implicit parameters from soDLA, CMAC_ATOMK_HALF should be modified as CMAC_ATOMK. 
-
-Modify the nvdla_core_clock to simba_core_clock.
 
 
 
