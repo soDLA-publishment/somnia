@@ -39,7 +39,7 @@ One mac can perform one vector multiply and accumulate per time.
 The final width is 2*m+log2(n), m is the bandwidth per element(BPE), n is the input vector length.
 
 
-## ACTIVE
+## Active
 
 Because weight is stored in a kernel, it can be re-used for multiple times, weight has one more shadow stage to cache. 
 
