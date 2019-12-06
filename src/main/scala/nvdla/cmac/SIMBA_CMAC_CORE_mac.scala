@@ -8,10 +8,10 @@ import chisel3.iotesters.Driver
 
 //this module is to mac dat and wt
 
-class SIMBA_CMAC_CORE_mac(useRealClock:Boolean = false)(implicit conf: simbaConfig) extends Module {
+class SOMNIA_CMAC_CORE_mac(useRealClock:Boolean = false)(implicit conf: somniaConfig) extends Module {
     val io = IO(new Bundle {
         //clock
-        val simba_core_clk = Input(Clock())
+        val somnia_core_clk = Input(Clock())
 
         //wt and dat
         val dat_actv = Vec(conf.CMAC_ATOMC, Flipped(ValidIO(new cmac_core_actv)))
@@ -43,7 +43,7 @@ class SIMBA_CMAC_CORE_mac(useRealClock:Boolean = false)(implicit conf: simbaConf
 //             │ ─┤ ─┤       │ ─┤ ─┤         
 //             └──┴──┘       └──┴──┘ 
 
-    val internal_clock = if(useRealClock) io.simba_core_clk 
+    val internal_clock = if(useRealClock) io.somnia_core_clk 
                          else clock
 
 
@@ -71,7 +71,7 @@ class SIMBA_CMAC_CORE_mac(useRealClock:Boolean = false)(implicit conf: simbaConf
 
 }
 
-object SIMBA_CMAC_CORE_macDriver extends App {
-  implicit val conf: simbaConfig = new simbaConfig
-  chisel3.Driver.execute(args, () => new SIMBA_CMAC_CORE_mac(useRealClock = true))
+object SOMNIA_CMAC_CORE_macDriver extends App {
+  implicit val conf: somniaConfig = new somniaConfig
+  chisel3.Driver.execute(args, () => new SOMNIA_CMAC_CORE_mac(useRealClock = true))
 }

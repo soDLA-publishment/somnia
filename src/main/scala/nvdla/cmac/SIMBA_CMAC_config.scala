@@ -7,7 +7,7 @@ import chisel3.util._
 
 class cmacConfiguration extends project_spec
 {
-    val CMAC_BPE = SIMBA_BPE //bits per element
+    val CMAC_BPE = SOMNIA_BPE //bits per element
     val CMAC_ATOMC = PE_MAC_ATOMIC_C_SIZE
     val CMAC_ATOMK = PE_MAC_ATOMIC_K_SIZE
     val CMAC_SLCG_NUM = 3+PE_MAC_ATOMIC_K_SIZE
@@ -24,9 +24,9 @@ class cmacConfiguration extends project_spec
 }
 
 
-class cmac_core_actv(implicit val conf: simbaConfig) extends Bundle{
+class cmac_core_actv(implicit val conf: somniaConfig) extends Bundle{
     val nz = Output(Bool())
-    val data = Output(UInt(conf.SIMBA_BPE.W))
+    val data = Output(UInt(conf.SOMNIA_BPE.W))
 }
 
 class cmac_reg_dual_flop_outputs extends Bundle{

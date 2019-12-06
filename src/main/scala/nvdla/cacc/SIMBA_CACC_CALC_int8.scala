@@ -5,11 +5,11 @@ import chisel3.experimental._
 import chisel3.util._
 
 
-class SIMBA_CACC_CALC_int8 extends Module {
+class SOMNIA_CACC_CALC_int8 extends Module {
 
     val io = IO(new Bundle {
         //clk
-        val simba_core_clk = Input(Clock())
+        val somnia_core_clk = Input(Clock())
 
         //input
         val in_data = Input(UInt(22.W))
@@ -49,7 +49,7 @@ class SIMBA_CACC_CALC_int8 extends Module {
 //           └─┐  ┐  ┌───────┬──┐  ┌──┘         
 //             │ ─┤ ─┤       │ ─┤ ─┤         
 //             └──┴──┘       └──┴──┘ 
-withClock(io.simba_core_clk){
+withClock(io.somnia_core_clk){
     //====================
     // Addition
     //====================
@@ -122,7 +122,7 @@ withClock(io.simba_core_clk){
 }}
 
 object SIM_CACC_CALC_int8Driver extends App {
-  chisel3.Driver.execute(args, () => new SIMBA_CACC_CALC_int8())
+  chisel3.Driver.execute(args, () => new SOMNIA_CACC_CALC_int8())
 }
 
 

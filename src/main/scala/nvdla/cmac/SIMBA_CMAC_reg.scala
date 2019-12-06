@@ -6,10 +6,10 @@ import chisel3.util._
 
 //Implementation overview of ping-pong register file.
 
-class SIMBA_CMAC_reg(implicit val conf: simbaConfig, useRealClock:Boolean=false) extends Module {
+class SOMNIA_CMAC_reg(implicit val conf: somniaConfig, useRealClock:Boolean=false) extends Module {
     val io = IO(new Bundle {
         //general clock
-        val simba_core_clk = Input(Clock())      
+        val somnia_core_clk = Input(Clock())      
 
         //csb2cmac
         val csb2cmac_a = new csb2dp_if
@@ -44,7 +44,7 @@ class SIMBA_CMAC_reg(implicit val conf: simbaConfig, useRealClock:Boolean=false)
 //             │ ─┤ ─┤       │ ─┤ ─┤         
 //             └──┴──┘       └──┴──┘ 
 
-    val internal_clock = if (useRealClock) io.simba_core_clk else clock
+    val internal_clock = if (useRealClock) io.somnia_core_clk else clock
 
 withClock(internal_clock){
 
@@ -59,7 +59,7 @@ withClock(internal_clock){
 
     val u_single_reg = Module(new NV_NVDLA_BASIC_REG_single)
 
-    u_single_reg.io.nvdla_core_clk := io.simba_core_clk
+    u_single_reg.io.nvdla_core_clk := io.somnia_core_clk
     u_single_reg.io.reg.offset := reg_offset
     u_single_reg.io.reg.wr_data := reg_wr_data 
     u_single_reg.io.reg.wr_en := s_reg_wr_en
@@ -73,8 +73,8 @@ withClock(internal_clock){
     val d0_reg_wr_en = Wire(Bool())
     val reg2dp_d0_op_en = RegInit(false.B)
 
-    val u_dual_reg_d0 = Module(new SIMBA_CMAC_REG_dual)
-    u_dual_reg_d0.io.simba_core_clk := io.simba_core_clk
+    val u_dual_reg_d0 = Module(new SOMNIA_CMAC_REG_dual)
+    u_dual_reg_d0.io.somnia_core_clk := io.somnia_core_clk
     u_dual_reg_d0.io.reg.offset := reg_offset
     u_dual_reg_d0.io.reg.wr_data := reg_wr_data
     u_dual_reg_d0.io.reg.wr_en := d0_reg_wr_en
@@ -86,8 +86,8 @@ withClock(internal_clock){
     val d1_reg_wr_en = Wire(Bool())
     val reg2dp_d1_op_en = RegInit(false.B)
 
-    val u_dual_reg_d1 = Module(new SIMBA_CMAC_REG_dual)
-    u_dual_reg_d1.io.simba_core_clk := io.simba_core_clk
+    val u_dual_reg_d1 = Module(new SOMNIA_CMAC_REG_dual)
+    u_dual_reg_d1.io.somnia_core_clk := io.somnia_core_clk
     u_dual_reg_d1.io.reg.offset := reg_offset
     u_dual_reg_d1.io.reg.wr_data := reg_wr_data
     u_dual_reg_d1.io.reg.wr_en := d1_reg_wr_en
@@ -162,7 +162,7 @@ withClock(internal_clock){
     //                                                                    //
     ////////////////////////////////////////////////////////////////////////
     val csb_logic = Module(new NV_NVDLA_CSB_LOGIC)
-    csb_logic.io.clk := io.simba_core_clk
+    csb_logic.io.clk := io.somnia_core_clk
     csb_logic.io.csb2dp <> io.csb2cmac_a
     reg_offset := csb_logic.io.reg.offset
     reg_wr_en := csb_logic.io.reg.wr_en

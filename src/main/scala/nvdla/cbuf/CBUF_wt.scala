@@ -7,7 +7,7 @@ import chisel3.util._
 
 
 // flow valid
-class csc2cmac_data_if(implicit val conf: simbaConfig)  extends Bundle{
+class csc2cmac_data_if(implicit val conf: somniaConfig)  extends Bundle{
     val mask = Output(Vec(conf.CMAC_ATOMC, Bool()))
     val data = Output(Vec(conf.CMAC_ATOMC, UInt(conf.CMAC_BPE.W)))
 //pd
@@ -21,7 +21,7 @@ class csc2cmac_data_if(implicit val conf: simbaConfig)  extends Bundle{
 
 
 //  flow valid
-class csc2cmac_wt_if(implicit val conf: simbaConfig) extends Bundle{
+class csc2cmac_wt_if(implicit val conf: somniaConfig) extends Bundle{
     val sel = Output(Vec(conf.CMAC_ATOMK, Bool()))
     val mask = Output(Vec(conf.CMAC_ATOMC, Bool()))
     val data = Output(Vec(conf.CMAC_ATOMC, UInt(conf.CMAC_BPE.W)))

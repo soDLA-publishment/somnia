@@ -6,7 +6,7 @@ import chisel3.experimental._
 
 
 //  flow valid
-class cmac2cacc_if(implicit val conf: simbaConfig) extends Bundle{
+class cmac2cacc_if(implicit val conf: somniaConfig) extends Bundle{
     val mask = Output(Vec(conf.CMAC_ATOMK, Bool()))
     val data = Output(Vec(conf.CMAC_ATOMK, UInt(conf.CMAC_RESULT_WIDTH.W)))
     //val mode = Output(Bool())
@@ -24,8 +24,8 @@ class csb2dp_if extends Bundle{
     val resp = ValidIO(UInt(34.W))
 }
 
-class simba_clock_if extends Bundle{
-    val simba_core_clk = Output(Clock())
+class somnia_clock_if extends Bundle{
+    val somnia_core_clk = Output(Clock())
     val dla_clk_ovr_on_sync = Output(Clock())
     val global_clk_ovr_on_sync = Output(Clock())
     val tmc2slcg_disable_clock_gating = Output(Bool())

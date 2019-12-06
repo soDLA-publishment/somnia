@@ -4,10 +4,10 @@ import chisel3._
 import chisel3.experimental._
 import chisel3.util._
 
-class SIMBA_CACC_dual_reg extends Module{
+class SOMNIA_CACC_dual_reg extends Module{
    val io = IO(new Bundle{
        // clk
-       val simba_core_clk = Input(Clock())
+       val somnia_core_clk = Input(Clock())
 
        //Register control interface
        val reg = new reg_control_if
@@ -41,7 +41,7 @@ class SIMBA_CACC_dual_reg extends Module{
    //       └─┐  ┐  ┌───────┬──┐  ┌──┘
    //         │ ─┤ ─┤       │ ─┤ ─┤
    //         └──┴──┘       └──┴──┘
-   withClock(io.simba_core_clk){
+   withClock(io.somnia_core_clk){
 
    // Address decode
    val nvdla_cacc_d_batch_number_0_wren = (io.reg.offset === "h1c".asUInt(32.W)) & io.reg.wr_en

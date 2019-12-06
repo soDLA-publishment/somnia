@@ -4,7 +4,7 @@ import chisel3._
 import chisel3.experimental._
 import chisel3.util._
 
-class simbaConfig extends caccConfiguration{
+class somniaConfig extends caccConfiguration{
 
 
 }

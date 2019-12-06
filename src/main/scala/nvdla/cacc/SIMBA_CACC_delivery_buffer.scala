@@ -4,11 +4,11 @@ import chisel3._
 import chisel3.experimental._
 import chisel3.util._
 
-class SIMBA_CACC_delivery_buffer(implicit conf: simbaConfig) extends Module {
+class SOMNIA_CACC_delivery_buffer(implicit conf: somniaConfig) extends Module {
 
     val io = IO(new Bundle {
         //clk
-        val simba_core_clk = Input(Clock())
+        val somnia_core_clk = Input(Clock())
 
         //cacc2ppu
         val cacc2ppu_pd = DecoupledIO(UInt((conf.CACC_PPU_WIDTH).W))    
@@ -49,7 +49,7 @@ class SIMBA_CACC_delivery_buffer(implicit conf: simbaConfig) extends Module {
 //           └─┐  ┐  ┌───────┬──┐  ┌──┘         
 //             │ ─┤ ─┤       │ ─┤ ─┤         
 //             └──┴──┘       └──┴──┘ 
-withClock(io.simba_core_clk){
+withClock(io.somnia_core_clk){
 
 // Instance RAMs 
 val data_left_mask = RegInit("b0".asUInt(conf.CACC_DWIDTH_DIV_PWIDTH.W))
@@ -57,7 +57,7 @@ val dbuf_rd_en_new = ~(data_left_mask.orR) & io.dbuf_rd_addr.valid
 
 val u_accu_dbuf = Module(new nv_ram_rws(conf.CACC_DBUF_DEPTH, conf.CACC_DBUF_WIDTH))
 
-u_accu_dbuf.io.clk := io.simba_core_clk
+u_accu_dbuf.io.clk := io.somnia_core_clk
 u_accu_dbuf.io.ra := io.dbuf_rd_addr.bits
 u_accu_dbuf.io.re := dbuf_rd_en_new
 u_accu_dbuf.io.we := io.dbuf_wr.addr.valid
@@ -114,7 +114,7 @@ io.accu2sc_credit_size.valid := RegNext(io.cacc2ppu_pd.valid & io.cacc2ppu_pd.re
 
 }}
 
-object SIMBA_CACC_delivery_bufferDriver extends App {
-  implicit val conf: simbaConfig = new simbaConfig
-  chisel3.Driver.execute(args, () => new SIMBA_CACC_delivery_buffer())
+object SOMNIA_CACC_delivery_bufferDriver extends App {
+  implicit val conf: somniaConfig = new somniaConfig
+  chisel3.Driver.execute(args, () => new SOMNIA_CACC_delivery_buffer())
 }

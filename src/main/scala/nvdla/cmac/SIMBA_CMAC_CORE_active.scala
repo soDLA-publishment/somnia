@@ -7,10 +7,10 @@ import chisel3.util._
 
 //this module is to active dat and wt
 
-class SIMBA_CMAC_CORE_active(useRealClock:Boolean = false)(implicit val conf: simbaConfig) extends Module {
+class SOMNIA_CMAC_CORE_active(useRealClock:Boolean = false)(implicit val conf: somniaConfig) extends Module {
     val io = IO(new Bundle {
         //clock
-        val simba_core_clk = Input(Clock())
+        val somnia_core_clk = Input(Clock())
 
         // input_dat
         val in_dat = Flipped(ValidIO(new csc2cmac_data_if))  /* data valid */
@@ -49,7 +49,7 @@ class SIMBA_CMAC_CORE_active(useRealClock:Boolean = false)(implicit val conf: si
 //             │ ─┤ ─┤       │ ─┤ ─┤         
 //             └──┴──┘       └──┴──┘ 
 
-    val internal_clock = if(useRealClock) io.simba_core_clk else clock  
+    val internal_clock = if(useRealClock) io.somnia_core_clk else clock  
 
                 
     class activeImpl{
@@ -187,9 +187,9 @@ class SIMBA_CMAC_CORE_active(useRealClock:Boolean = false)(implicit val conf: si
 
 
 
-object SIMBA_CMAC_CORE_activeDriver extends App {
-  implicit val conf: simbaConfig = new simbaConfig
-  chisel3.Driver.execute(args, () => new SIMBA_CMAC_CORE_active(useRealClock = true))
+object SOMNIA_CMAC_CORE_activeDriver extends App {
+  implicit val conf: somniaConfig = new somniaConfig
+  chisel3.Driver.execute(args, () => new SOMNIA_CMAC_CORE_active(useRealClock = true))
 }
 
 

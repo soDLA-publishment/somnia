@@ -5,11 +5,11 @@ import chisel3.experimental._
 import chisel3.util._
 
 
-class SIMBA_cmac(implicit val conf: simbaConfig) extends Module {
+class SOMNIA_cmac(implicit val conf: somniaConfig) extends Module {
     val io = IO(new Bundle {
         //general clock
-        val simba_clock = Flipped(new simba_clock_if)
-        val simba_core_rstn = Input(Bool())
+        val somnia_clock = Flipped(new somnia_clock_if)
+        val somnia_core_rstn = Input(Bool())
         //csb
         val csb2cmac_a = new csb2dp_if
         //odif
@@ -40,7 +40,7 @@ class SIMBA_cmac(implicit val conf: simbaConfig) extends Module {
 //             │ ─┤ ─┤       │ ─┤ ─┤         
 //             └──┴──┘       └──┴──┘ 
 
-withReset(!io.simba_core_rstn){
+withReset(!io.somnia_core_rstn){
     
     //==========================================================
     // core
@@ -48,11 +48,11 @@ withReset(!io.simba_core_rstn){
     //==========================================================
     // reg
     //==========================================================
-    val u_core = Module(new SIMBA_CMAC_core)
-    val u_reg = Module(new SIMBA_CMAC_reg)
+    val u_core = Module(new SOMNIA_CMAC_core)
+    val u_reg = Module(new SOMNIA_CMAC_reg)
     //clk
-    u_core.io.simba_clock <> io.simba_clock         //|< b
-    u_reg.io.simba_core_clk := io.simba_clock.simba_core_clk        //|< i
+    u_core.io.somnia_clock <> io.somnia_clock         //|< b
+    u_reg.io.somnia_core_clk := io.somnia_clock.somnia_core_clk        //|< i
     u_core.io.slcg_op_en := u_reg.io.slcg_op_en           
     
     u_core.io.sc2mac_dat <> io.sc2mac_dat               //|< b
@@ -65,7 +65,7 @@ withReset(!io.simba_core_rstn){
 }}
 
 
-object SIMBA_cmacDriver extends App {
-  implicit val conf: simbaConfig = new simbaConfig
-  chisel3.Driver.execute(args, () => new SIMBA_cmac())
+object SOMNIA_cmacDriver extends App {
+  implicit val conf: somniaConfig = new somniaConfig
+  chisel3.Driver.execute(args, () => new SOMNIA_cmac())
 }

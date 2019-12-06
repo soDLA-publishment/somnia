@@ -4,11 +4,11 @@ import chisel3._
 import chisel3.experimental._
 import chisel3.util._
 
-class SIMBA_CACC_assembly_ctrl(implicit conf: simbaConfig) extends Module {
+class SOMNIA_CACC_assembly_ctrl(implicit conf: somniaConfig) extends Module {
 
     val io = IO(new Bundle {
         //clk
-        val simba_core_clk = Input(Clock())
+        val somnia_core_clk = Input(Clock())
 
         //abuf
         val abuf_rd_addr = ValidIO(UInt(conf.CACC_ABUF_AWIDTH.W))
@@ -58,7 +58,7 @@ class SIMBA_CACC_assembly_ctrl(implicit conf: simbaConfig) extends Module {
 //           └─┐  ┐  ┌───────┬──┐  ┌──┘         
 //             │ ─┤ ─┤       │ ─┤ ─┤         
 //             └──┴──┘       └──┴──┘ 
-withClock(io.simba_core_clk){
+withClock(io.somnia_core_clk){
 
 val accu_valid = RegNext(io.mac2accu_pd.valid, false.B)
 val accu_pd = RegEnable(io.mac2accu_pd.bits, "b0".asUInt(9.W), io.mac2accu_pd.valid)
@@ -126,9 +126,9 @@ io.accu_ctrl_pd.bits := Cat(accu_ctrl_dlv_elem_mask, accu_ctrl_layer_end, accu_c
 }}
 
 
-object SIMBA_CACC_assembly_ctrlDriver extends App {
-  implicit val conf: simbaConfig = new simbaConfig
-  chisel3.Driver.execute(args, () => new SIMBA_CACC_assembly_ctrl())
+object SOMNIA_CACC_assembly_ctrlDriver extends App {
+  implicit val conf: somniaConfig = new somniaConfig
+  chisel3.Driver.execute(args, () => new SOMNIA_CACC_assembly_ctrl())
 }
 
 

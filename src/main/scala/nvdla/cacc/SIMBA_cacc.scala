@@ -5,11 +5,11 @@ import chisel3.experimental._
 import chisel3.util._
 import chisel3.iotesters.Driver
 
-class SIMBA_cacc(implicit conf: simbaConfig) extends Module {
+class SOMNIA_cacc(implicit conf: somniaConfig) extends Module {
     val io = IO(new Bundle {
         // clk
-        val simba_clock = Flipped(new simba_clock_if)
-        val simba_core_rstn = Input(Bool())
+        val somnia_clock = Flipped(new somnia_clock_if)
+        val somnia_core_rstn = Input(Bool())
 
         //csb2cacc
         val csb2cacc = new csb2dp_if 
@@ -48,17 +48,17 @@ class SIMBA_cacc(implicit conf: simbaConfig) extends Module {
 //           └─┐  ┐  ┌───────┬──┐  ┌──┘         
 //             │ ─┤ ─┤       │ ─┤ ─┤         
 //             └──┴──┘       └──┴──┘ 
-withReset(!io.simba_core_rstn){
+withReset(!io.somnia_core_rstn){
 
-    val simba_cell_gated_clk = Wire(Clock())
-    val simba_op_gated_clk = Wire(Vec(3, Clock()))
+    val somnia_cell_gated_clk = Wire(Clock())
+    val somnia_op_gated_clk = Wire(Vec(3, Clock()))
 
     //==========================================================
     // Regfile
     //==========================================================
-    val u_regfile = Module(new SIMBA_CACC_regfile)
+    val u_regfile = Module(new SOMNIA_CACC_regfile)
 
-    u_regfile.io.simba_core_clk := io.simba_clock.simba_core_clk  
+    u_regfile.io.somnia_core_clk := io.somnia_clock.somnia_core_clk  
     u_regfile.io.csb2cacc <> io.csb2cacc   
          
     val field = u_regfile.io.reg2dp_field  
@@ -66,9 +66,9 @@ withReset(!io.simba_core_rstn){
     //==========================================================
     // Assembly controller
     //==========================================================
-    val u_assembly_ctrl = Module(new SIMBA_CACC_assembly_ctrl)
+    val u_assembly_ctrl = Module(new SOMNIA_CACC_assembly_ctrl)
 
-    u_assembly_ctrl.io.simba_core_clk := simba_op_gated_clk(0) 
+    u_assembly_ctrl.io.somnia_core_clk := somnia_op_gated_clk(0) 
 
     u_assembly_ctrl.io.mac2accu_pd.valid := io.mac2accu.valid
     u_assembly_ctrl.io.mac2accu_pd.bits := io.mac2accu.bits.pd
@@ -80,9 +80,9 @@ withReset(!io.simba_core_rstn){
     //==========================================================
     // Assembly buffer
     //==========================================================
-    val u_assembly_buffer = Module(new SIMBA_CACC_assembly_buffer)
+    val u_assembly_buffer = Module(new SOMNIA_CACC_assembly_buffer)
     
-    u_assembly_buffer.io.simba_core_clk := simba_op_gated_clk(1)
+    u_assembly_buffer.io.somnia_core_clk := somnia_op_gated_clk(1)
     u_assembly_buffer.io.pwrbus_ram_pd := io.pwrbus_ram_pd
 
     u_assembly_buffer.io.abuf_rd.addr.valid := u_assembly_ctrl.io.abuf_rd_addr.valid
@@ -91,10 +91,10 @@ withReset(!io.simba_core_rstn){
     //==========================================================
     // CACC calculator
     //==========================================================
-    val u_calculator = Module(new SIMBA_CACC_calculator)
+    val u_calculator = Module(new SOMNIA_CACC_calculator)
 
-    u_calculator.io.simba_cell_clk := simba_cell_gated_clk
-    u_calculator.io.simba_core_clk := simba_op_gated_clk(2)
+    u_calculator.io.somnia_cell_clk := somnia_cell_gated_clk
+    u_calculator.io.somnia_core_clk := somnia_op_gated_clk(2)
 
     u_calculator.io.abuf_rd_data := u_assembly_buffer.io.abuf_rd.data
     u_assembly_buffer.io.abuf_wr <> u_calculator.io.abuf_wr
@@ -115,9 +115,9 @@ withReset(!io.simba_core_rstn){
     //==========================================================
     // Delivery controller
     //==========================================================
-    val u_delivery_ctrl = Module(new SIMBA_CACC_delivery_ctrl)
+    val u_delivery_ctrl = Module(new SOMNIA_CACC_delivery_ctrl)
 
-    u_delivery_ctrl.io.simba_core_clk := io.simba_clock.simba_core_clk
+    u_delivery_ctrl.io.somnia_core_clk := io.somnia_clock.somnia_core_clk
 
     u_delivery_ctrl.io.dlv_data := u_calculator.io.dlv_data
     u_delivery_ctrl.io.dlv_mask := u_calculator.io.dlv_mask
@@ -133,9 +133,9 @@ withReset(!io.simba_core_rstn){
     // Delivery buffer
     //==========================================================
 
-    val u_delivery_buffer = Module(new SIMBA_CACC_delivery_buffer)
+    val u_delivery_buffer = Module(new SOMNIA_CACC_delivery_buffer)
 
-    u_delivery_buffer.io.simba_core_clk := io.simba_clock.simba_core_clk
+    u_delivery_buffer.io.somnia_core_clk := io.somnia_clock.somnia_core_clk
     u_delivery_buffer.io.pwrbus_ram_pd := io.pwrbus_ram_pd
 
 
@@ -154,22 +154,22 @@ withReset(!io.simba_core_rstn){
     // SLCG groups
     //==========================================================
 
-    val u_slcg_op = Array.fill(3){Module(new SIMBA_slcg(1, false))}
+    val u_slcg_op = Array.fill(3){Module(new SOMNIA_slcg(1, false))}
 
     for(i<- 0 to 2){
-        u_slcg_op(i).io.simba_clock := io.simba_clock 
+        u_slcg_op(i).io.somnia_clock := io.somnia_clock 
         u_slcg_op(i).io.slcg_en(0):= u_regfile.io.slcg_op_en(i)
-        simba_op_gated_clk(i) := u_slcg_op(i).io.simba_core_gated_clk                                                                                               
+        somnia_op_gated_clk(i) := u_slcg_op(i).io.somnia_core_gated_clk                                                                                               
     }
 
-    val u_slcg_cell_0 = Module(new SIMBA_slcg(1, false))
-    u_slcg_cell_0.io.simba_clock := io.simba_clock
+    val u_slcg_cell_0 = Module(new SOMNIA_slcg(1, false))
+    u_slcg_cell_0.io.somnia_clock := io.somnia_clock
     u_slcg_cell_0.io.slcg_en(0) := u_regfile.io.slcg_op_en(3) | u_assembly_ctrl.io.slcg_cell_en
-    simba_cell_gated_clk := u_slcg_cell_0.io.simba_core_gated_clk  
+    somnia_cell_gated_clk := u_slcg_cell_0.io.somnia_core_gated_clk  
 }}
 
 
-object SIMBA_caccDriver extends App {
-  implicit val conf: simbaConfig = new simbaConfig
-  chisel3.Driver.execute(args, () => new SIMBA_cacc())
+object SOMNIA_caccDriver extends App {
+  implicit val conf: somniaConfig = new somniaConfig
+  chisel3.Driver.execute(args, () => new SOMNIA_cacc())
 }

@@ -6,12 +6,12 @@ import chisel3.util._
 
 //calculate accumulate data
 
-class SIMBA_CACC_calculator(implicit conf: simbaConfig) extends Module {
+class SOMNIA_CACC_calculator(implicit conf: somniaConfig) extends Module {
 
     val io = IO(new Bundle {
         //clk
-        val simba_core_clk = Input(Clock())
-        val simba_cell_clk = Input(Clock())
+        val somnia_core_clk = Input(Clock())
+        val somnia_cell_clk = Input(Clock())
 
         //abuf
         val abuf_rd_data = Input(UInt(conf.CACC_ABUF_WIDTH.W))
@@ -63,7 +63,7 @@ class SIMBA_CACC_calculator(implicit conf: simbaConfig) extends Module {
 //             │ ─┤ ─┤       │ ─┤ ─┤         
 //             └──┴──┘       └──┴──┘ 
 
-withClock(io.simba_core_clk){             
+withClock(io.somnia_core_clk){             
     // unpack abuffer read data
     val abuf_in_data = VecInit((0 to conf.CACC_ATOMK-1) 
                         map { i => io.abuf_rd_data(conf.CACC_PARSUM_WIDTH*(i+1)-1, conf.CACC_PARSUM_WIDTH*i)})
@@ -104,10 +104,10 @@ withClock(io.simba_core_clk){
     val calc_pout_sum = Wire(Vec(conf.CACC_ATOMK, UInt(conf.CACC_PARSUM_WIDTH.W)))
     val calc_fout_sum = Wire(Vec(conf.CACC_ATOMK, UInt(conf.CACC_FINAL_WIDTH.W)))
 
-    val u_cell_int8 = Array.fill(conf.CACC_ATOMK){Module(new SIMBA_CACC_CALC_int8)}
+    val u_cell_int8 = Array.fill(conf.CACC_ATOMK){Module(new SOMNIA_CACC_CALC_int8)}
 
     for(i <- 0 to conf.CACC_ATOMK-1){
-        u_cell_int8(i).io.simba_core_clk := io.simba_cell_clk
+        u_cell_int8(i).io.somnia_core_clk := io.somnia_cell_clk
         u_cell_int8(i).io.cfg_truncate := io.cfg_truncate
         u_cell_int8(i).io.cfg_relu_bypass := io.cfg_relu_bypass
         u_cell_int8(i).io.in_data := calc_op0(i)
@@ -237,7 +237,7 @@ withClock(io.simba_core_clk){
 }}
 
 
-object SIMBA_CACC_calculatorDriver extends App {
-  implicit val conf: simbaConfig = new simbaConfig
-  chisel3.Driver.execute(args, () => new SIMBA_CACC_calculator())
+object SOMNIA_CACC_calculatorDriver extends App {
+  implicit val conf: somniaConfig = new somniaConfig
+  chisel3.Driver.execute(args, () => new SOMNIA_CACC_calculator())
 }

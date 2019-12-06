@@ -11,7 +11,7 @@ class cbufConfiguration extends caccConfiguration
 }
 
 
-// class router2buf_wr_if(implicit val conf: simbaConfig) extends Bundle{
+// class router2buf_wr_if(implicit val conf: somniaConfig) extends Bundle{
 //     val en = Output(Bool())
 //     val sel = Output(UInt(conf.CBUF_WR_BANK_SEL_WIDTH.W))
 //     val addr = Output(UInt(conf.CBUF_ADDR_WIDTH.W)))

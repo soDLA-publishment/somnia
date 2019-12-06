@@ -6,11 +6,11 @@ import chisel3.util._
 
 //this module is to process dat
 
-class SIMBA_CACC_delivery_ctrl(implicit conf: simbaConfig) extends Module {
+class SOMNIA_CACC_delivery_ctrl(implicit conf: somniaConfig) extends Module {
 
     val io = IO(new Bundle {
         //clk
-        val simba_core_clk = Input(Clock())
+        val somnia_core_clk = Input(Clock())
 
         //dbuf
         val dbuf_rd_ready = Input(Bool())
@@ -50,7 +50,7 @@ class SIMBA_CACC_delivery_ctrl(implicit conf: simbaConfig) extends Module {
 //           └─┐  ┐  ┌───────┬──┐  ┌──┘         
 //             │ ─┤ ─┤       │ ─┤ ─┤         
 //             └──┴──┘       └──┴──┘
-withClock(io.simba_core_clk){
+withClock(io.somnia_core_clk){
 
 //////////////////////////////////////////////////////////////
 ///// parse input status signal                          /////

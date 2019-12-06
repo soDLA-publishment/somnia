@@ -6,10 +6,10 @@ import chisel3.util._
 import chisel3.experimental.chiselName
 
 @chiselName
-class SIMBA_CMAC_REG_dual(useRealClock: Boolean = false) extends Module {
+class SOMNIA_CMAC_REG_dual(useRealClock: Boolean = false) extends Module {
   val io = IO(new Bundle {
     // clk
-    val simba_core_clk = Input(Clock())
+    val somnia_core_clk = Input(Clock())
 
     // Register control interface
     val reg = new reg_control_if
@@ -43,7 +43,7 @@ class SIMBA_CMAC_REG_dual(useRealClock: Boolean = false) extends Module {
   //             │ ─┤ ─┤       │ ─┤ ─┤
   //             └──┴──┘       └──┴──┘
 
-  val internal_clock = if (useRealClock) io.simba_core_clk else clock
+  val internal_clock = if (useRealClock) io.somnia_core_clk else clock
 
   class dualImp {
 

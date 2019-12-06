@@ -5,10 +5,10 @@ import chisel3.experimental._
 import chisel3.util._
 
 
-class SIMBA_CMAC_CORE_rt_in(useRealClock:Boolean = false)(implicit val conf: simbaConfig) extends Module {
+class SOMNIA_CMAC_CORE_rt_in(useRealClock:Boolean = false)(implicit val conf: somniaConfig) extends Module {
     val io = IO(new Bundle {
         //clock
-        val simba_core_clk = Input(Clock())
+        val somnia_core_clk = Input(Clock())
 
         // odif
         // sc2mac dat&wt
@@ -41,7 +41,7 @@ class SIMBA_CMAC_CORE_rt_in(useRealClock:Boolean = false)(implicit val conf: sim
 //           └─┐  ┐  ┌───────┬──┐  ┌──┘         
 //             │ ─┤ ─┤       │ ─┤ ─┤         
 //             └──┴──┘       └──┴──┘ 
-    val internal_clock = if(useRealClock) io.simba_core_clk else clock
+    val internal_clock = if(useRealClock) io.somnia_core_clk else clock
 
     class rt_inImpl{
 
@@ -118,7 +118,7 @@ class SIMBA_CMAC_CORE_rt_in(useRealClock:Boolean = false)(implicit val conf: sim
 
 }
 
-object SIMBA_CMAC_CORE_rt_inDriver extends App {
-  implicit val conf: simbaConfig = new simbaConfig
-  chisel3.Driver.execute(args, () => new SIMBA_CMAC_CORE_rt_in(useRealClock = true))
+object SOMNIA_CMAC_CORE_rt_inDriver extends App {
+  implicit val conf: somniaConfig = new somniaConfig
+  chisel3.Driver.execute(args, () => new SOMNIA_CMAC_CORE_rt_in(useRealClock = true))
 }
