@@ -57,6 +57,8 @@ class SIMBA_CACC_dual_reg extends Module{
    val nvdla_cacc_d_out_saturation_0_wren = (io.reg.offset === "h30".asUInt(32.W)) & io.reg.wr_en
    val nvdla_cacc_d_surf_stride_0_wren = (io.reg.offset === "h24".asUInt(32.W)) & io.reg.wr_en
 
+   val nvdla_sdp_d_dp_bn_cfg_0_wren = (io.reg.offset === "h6c".asUInt(32.W)) & io.reg.wr_en
+
    io.op_en_trigger := nvdla_cacc_d_op_enable_0_wren
 
    //Output mux
@@ -86,7 +88,11 @@ class SIMBA_CACC_dual_reg extends Module{
    //nvdla_cacc_d_out_saturation_0_out
    "h30".asUInt(32.W)  -> io.sat_count,
    //nvdla_cacc_d_surf_stride_0_out
-   "h24".asUInt(32.W)  -> Cat("b0".asUInt(8.W), io.field.surf_stride)
+   "h24".asUInt(32.W)  -> Cat("b0".asUInt(8.W), io.field.surf_stride),
+
+   //nvdla_sdp_d_dp_bn_cfg_0_out,
+   "h6c".asUInt(32.W) ->  Cat("b0".asUInt(25.W), io.field.bn_relu_bypass, "b0".asUInt(6.W))
+
    ))
 
    //Register flop declarations
@@ -115,5 +121,7 @@ class SIMBA_CACC_dual_reg extends Module{
    io.field.proc_precision := RegEnable(io.reg.wr_data(13, 12), "b01".asUInt(2.W), nvdla_cacc_d_misc_cfg_0_wren)
    // Register: NVDLA_CACC_D_SURF_STRIDE_0    Field: surf_stride
    io.field.surf_stride := RegEnable(io.reg.wr_data(23, 0), "b0".asUInt(24.W), nvdla_cacc_d_surf_stride_0_wren)
+
+   io.field.bn_relu_bypass := RegEnable(io.reg.wr_data(0), "b0".asUInt(24.W), nvdla_sdp_d_dp_bn_cfg_0_wren)
 
 }}

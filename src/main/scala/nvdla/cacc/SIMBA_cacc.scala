@@ -75,6 +75,7 @@ withReset(!io.simba_core_rstn){
     
     u_assembly_ctrl.io.reg2dp_op_en := u_regfile.io.reg2dp_op_en            
     u_assembly_ctrl.io.reg2dp_clip_truncate := field.clip_truncate
+    u_assembly_ctrl.io.reg2dp_relu_bypass := field.bn_relu_bypass
     
     //==========================================================
     // Assembly buffer
@@ -103,6 +104,8 @@ withReset(!io.simba_core_rstn){
 
     u_calculator.io.cfg_in_en_mask := u_assembly_ctrl.io.cfg_in_en_mask
     u_calculator.io.cfg_truncate := u_assembly_ctrl.io.cfg_truncate
+    u_calculator.io.cfg_relu_bypass := u_assembly_ctrl.io.cfg_relu_bypass
+
 
     u_calculator.io.mac2accu_data := io.mac2accu.bits.data
     u_calculator.io.mac2accu_mask := io.mac2accu.bits.mask

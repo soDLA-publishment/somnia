@@ -23,10 +23,12 @@ class SIMBA_CACC_assembly_ctrl(implicit conf: simbaConfig) extends Module {
         //cfg
         val cfg_in_en_mask = Output(Bool())
         val cfg_truncate = Output(UInt(5.W))
+        val cfg_relu_bypass = Output(Bool())
 
         //reg2dp
         val reg2dp_op_en = Input(Bool()) 
         val reg2dp_clip_truncate = Input(UInt(5.W))
+        val reg2dp_relu_bypass = Input(Bool())
         val dp2reg_done = Input(Bool())
         
         //slcg
@@ -98,6 +100,7 @@ when(layer_st | accu_valid){
 }
 
 io.cfg_truncate := RegEnable(io.reg2dp_clip_truncate, false.B, layer_st)
+io.cfg_relu_bypass := RegEnable(io.reg2dp_relu_bypass, false.B, layer_st)
 io.cfg_in_en_mask := RegEnable(cfg_in_en_mask_w, false.B, layer_st)
 
 io.abuf_rd_addr.valid := accu_rd_en

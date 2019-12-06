@@ -47,4 +47,6 @@
      val conv_mode = Output(Bool())
      val proc_precision = Output(UInt(2.W))
      val surf_stride = Output(UInt(24.W))
+
+     val bn_relu_bypass = Output(Bool())
  }

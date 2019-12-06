@@ -26,6 +26,7 @@ class SIMBA_CACC_CALC_int8 extends Module {
         val out_partial_valid = Output(Bool())
 
         val cfg_truncate = Input(UInt(5.W))
+        val cfg_relu_bypass = Input(Bool())
     })
 //     
 //          ┌─┐       ┌─┐
@@ -105,12 +106,18 @@ withClock(io.simba_core_clk){
     val i_partial_vld = i_sat_vld & ~i_sat_sel
     val i_final_vld = i_sat_vld&i_sat_sel
 
+    //with 
+    val u_x_relu = Module(new NV_NVDLA_HLS_relu(32))
+    u_x_relu.io.data_in := i_final_result
+    val relu_out = u_x_relu.io.data_out
+    val relu_dout = Mux(io.cfg_relu_bypass, i_final_result, relu_out)
+
     //====================
     io.out_partial_valid := RegNext(i_partial_vld, false.B)
     io.out_partial_data := RegEnable(i_partial_result, i_partial_vld)
     io.out_final_valid := RegNext(i_final_vld, false.B)
     io.out_final_sat := RegNext(i_final_vld & i_sft_need_sat, false.B)
-    io.out_final_data := RegEnable(i_final_result, i_final_vld)
+    io.out_final_data := RegEnable(relu_dout, i_final_vld)
 
 }}
 

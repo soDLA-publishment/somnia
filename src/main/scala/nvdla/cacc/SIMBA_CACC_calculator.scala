@@ -30,6 +30,7 @@ class SIMBA_CACC_calculator(implicit conf: simbaConfig) extends Module {
         //cfg
         val cfg_in_en_mask = Input(Bool())
         val cfg_truncate = Input(UInt(5.W))
+        val cfg_relu_bypass = Input(Bool())
 
         //mac2cacc
         val mac2accu_data = Input(Vec(conf.CACC_ATOMK, UInt(conf.CACC_IN_WIDTH.W)))
@@ -108,6 +109,7 @@ withClock(io.simba_core_clk){
     for(i <- 0 to conf.CACC_ATOMK-1){
         u_cell_int8(i).io.simba_core_clk := io.simba_cell_clk
         u_cell_int8(i).io.cfg_truncate := io.cfg_truncate
+        u_cell_int8(i).io.cfg_relu_bypass := io.cfg_relu_bypass
         u_cell_int8(i).io.in_data := calc_op0(i)
         u_cell_int8(i).io.in_op := calc_op1(i)
         u_cell_int8(i).io.in_op_valid := calc_op1_vld(i)
