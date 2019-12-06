@@ -57,7 +57,7 @@ CMAC_ATOMC = PE_MAC_ATOMIC_C_SIZE, CMAC_ATOMK = PE_MAC_ATOMIC_K_SIZE.
 
 Modify the corresponding implicit parameters from soDLA, CMAC_ATOMK_HALF should be modified as CMAC_ATOMK. 
 
-Modify the nvdla_core_clock to simba_core_clock.
+Modify the nvdla_core_clock to somnia_core_clock.
 
 
 
