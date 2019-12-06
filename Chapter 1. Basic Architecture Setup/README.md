@@ -43,7 +43,9 @@ class project_spec extends nv_simba
 
 In the configuration tree, we use a ring structure, namely, the configuration is like a ring, 
 
-basic configurations -> advanced configurations -> module a configurations -> module b configurations -> project configurations. To avoid parameters in module a and parameters in module b are messed up, use a style of A_parameter_this and B_parameter_this, to make a separate.
+basic configurations -> advanced configurations -> module a configurations -> module b configurations -> project configurations. To avoid parameters in module a and parameters in module b are messed up, use a style of A_parameter_this and B_parameter_this, to make a separate. 
+
+I like to call it 'fixed rope', which is a term in mountain climbing.
 
 ## Setup Standard Interface
 
